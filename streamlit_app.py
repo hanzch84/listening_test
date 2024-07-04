@@ -2,6 +2,10 @@ import streamlit as st
 from pathlib import Path
 from openai import OpenAI
 import os
+from dotenv import load_dotenv  # 이 줄을 추가
+
+# .env 파일 로드
+load_dotenv()
 
 # 환경 변수에서 OpenAI API 키 가져오기
 api_key = os.getenv('OPENAI_API_KEY')
@@ -17,6 +21,8 @@ else:
 
     # 입력 텍스트 박스
     text_input = st.text_area("Enter the text you want to convert to speech", "Today is a wonderful day to build something people love!")
+    option = st.radio("Select a voice.", ["nova", "shimmer", "echo", "onyx", "fable", "alloy"])
+    st.write = option
 
     # 변환 버튼
     if st.button("Convert to Speech"):
@@ -27,7 +33,7 @@ else:
             # 텍스트를 음성으로 변환
             response = client.audio.speech.create(
                 model="tts-1-hd",
-                voice="alloy",
+                voice=option,
                 input=text_input
             )
 
@@ -38,5 +44,9 @@ else:
 
             st.success("Speech conversion successful!")
             st.audio(str(speech_file_path))
+
         except Exception as e:
             st.error(f"An error occurred: {e}")
+
+
+
