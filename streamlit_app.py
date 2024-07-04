@@ -23,6 +23,9 @@ else:
     text_input = st.text_area("Enter the text you want to convert to speech", "Today is a wonderful day to build something people love!")
     option = st.radio("Select a voice.", ["nova", "shimmer", "echo", "onyx", "fable", "alloy"])
     st.write = option
+    if st.button("Preprocessing"):
+        pass
+
 
     # 변환 버튼
     if st.button("Convert to Speech"):
