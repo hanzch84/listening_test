@@ -23,8 +23,14 @@ else:
     text_input = st.text_area("Enter the text you want to convert to speech", "Today is a wonderful day to build something people love!")
     option = st.radio("Select a voice.", ["nova", "shimmer", "echo", "onyx", "fable", "alloy"])
     st.write = option
+    col_name, col_line = st.columns([2,8])
     if st.button("Preprocessing"):
-        pass
+        result = ''
+        for line in text_input.split("\n"):
+            if ":" in line:
+                name, talk = line.split(":")
+                col_name.markdown(name)
+                col_line.markdown(talk)
 
 
     # 변환 버튼
