@@ -4,6 +4,7 @@ from openai import OpenAI
 import os
 from dotenv import load_dotenv  # 이 줄을 추가
 
+
 # .env 파일 로드
 load_dotenv()
 
@@ -20,11 +21,17 @@ else:
     st.title("Text-to-Speech with OpenAI")
 
     # 입력 텍스트 박스
+
     text_input = st.text_area("Enter the text you want to convert to speech", "Today is a wonderful day to build something people love!")
-    option = st.radio("Select a voice.", ["nova", "shimmer", "echo", "onyx", "fable", "alloy"])
+    col_kvoice, col_voice, col_interval, col_buttons = st.columns([3,3,3,3])
+    ko_option = col_kvoice.radio("Select a korean voice.", sorted(["nova", "shimmer", "echo", "onyx", "fable", "alloy"]))
+    option = col_voice.radio("Select a basic voice.", sorted(["nova", "shimmer", "echo", "onyx", "fable", "alloy"]))
+    interline = col_interval.number_input("대사 간 간격(ms)",min_value=30, max_value=2000)
+    internum = col_interval.number_input("문제 간 간격(ms)",min_value=30, max_value=2000)
+
     st.write = option
     col_name, col_line = st.columns([2,8])
-    if st.button("Preprocessing"):
+    if col_buttons.button("Preprocessing"):
         result = ''
         for line in text_input.split("\n"):
             if ":" in line:
@@ -34,7 +41,7 @@ else:
 
 
     # 변환 버튼
-    if st.button("Convert to Speech"):
+    if col_buttons.button("Convert to Speech"):
         try:
             # 음성 파일 저장 경로 설정
             speech_file_path = Path("speech.mp3")
