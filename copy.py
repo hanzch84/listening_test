@@ -3,8 +3,11 @@ from pathlib import Path
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
+from gtts import gTTS
 from collections import Counter
 import re
+import wave
+import contextlib
 
 def which_eng_kor(input_s):
     count = Counter(input_s)
@@ -21,99 +24,40 @@ def extract_question(text):
     else:
         return None, text
 
+def append_audio_file(final_wf, input_file):
+    with wave.open(input_file, 'rb') as wf:
+        if final_wf.getnchannels() == 0:
+            final_wf.setnchannels(wf.getnchannels())
+            final_wf.setsampwidth(wf.getsampwidth())
+            final_wf.setframerate(wf.getframerate())
+        while True:
+            data = wf.readframes(1024)
+            if not data:
+                break
+            final_wf.writeframes(data)
+
+# .env 파일 로드
 load_dotenv()
 
+# 환경 변수에서 OpenAI API 키 가져오기
 api_key = os.getenv('OPENAI_API_KEY')
 
+# OpenAI API 키 설정
 if not api_key:
     st.error("API key not found. Please set the OPENAI_API_KEY environment variable.")
 else:
     client = OpenAI(api_key=api_key)
 
-    st.title("Text-to-Speech with OpenAI")
+    st.title("Text-to-Speech with OpenAI and gTTS")
 
-    text_input = "\n" * 30
-
-    col_kr_voice, col_fe_voice, col_ma_voice, col_interval = st.columns([3, 3, 3, 3])
-    ko_option = col_kr_voice.radio("Select a Korean voice.", ['alloy', 'echo', 'fable', 'nova', 'onyx', 'shimmer'], key="korean_option")
-    female_voice = col_fe_voice.radio("Select a female voice.", ['alloy', 'fable', 'nova', 'shimmer'], key="female_option")
-    male_voice = col_ma_voice.radio("Select a male voice.", ['echo', 'onyx'], key="male_option")
+    col_kvoice, col_voice, col_interval, col_buttons = st.columns([3, 3, 3, 3])
+    ko_option = col_kvoice.radio("Select a Korean voice.", sorted(["nova", "shimmer", "echo", "onyx", "fable", "alloy"]))
+    option = col_voice.radio("Select a basic voice.", sorted(["nova", "shimmer", "echo", "onyx", "fable", "alloy"]))
     interline = col_interval.number_input("대사 간 간격(ms)", min_value=30, max_value=2000)
     internum = col_interval.number_input("문제 간 간격(ms)", min_value=30, max_value=2000)
 
-    col_btn1, col_btn2 = st.columns(2)
-    st.write = female_voice
-
     col_lang, col_name, col_line = st.columns([1, 2, 8])
-    if col_btn1.button("Preprocessing",disabled=True):
-        result = ''
-        for line in st.session_state.input_text.split("\n"):
-            line = line.lstrip()
-            if re.match(r'(M:|M :|W:|W :)', line):
-                name, talk = re.split(r'\s*:\s*', line, 1)
-            elif which_eng_kor(line) == "ko":
-                name, talk = extract_question(line)
-                if not name:
-                    name, talk = "", line
-            else:
-                name, talk = "", line
-
-            col_lang.markdown(which_eng_kor(line))  # 언어 표시(필요시 활성화)
-            col_name.markdown(name.strip())
-            col_line.markdown(talk.strip())
-    success_message = st.empty()
-    warning_message = st.empty()
-    audio_placeholder = st.empty()
-
-    if col_btn2.button("Convert to Speech"):
-        try:
-            speech_file_path = Path("speech.mp3")
-            input_text = st.session_state.input_text
-            sentences = input_text.split('\n')
-            tts = bytearray()
-
-            # 초기 성별 기본값 설정
-            current_voice = female_voice
-
-            for sentence in sentences:
-                sentence = sentence.lstrip()
-                lang = which_eng_kor(sentence)
-
-                if re.match(r'W:|W :', sentence):
-                    current_voice = female_voice
-                elif re.match(r'M:|M :', sentence):
-                    current_voice = male_voice
-                elif lang == 'ko':
-                    current_voice = ko_option
-
-                number, sentence = extract_question(sentence)
-                if number:
-                    text_to_convert = f"{number}번 {sentence}"
-                else:
-                    text_to_convert = sentence
-
-                if text_to_convert.strip():
-                    response = client.audio.speech.create(
-                        model="tts-1-hd",
-                        voice=current_voice,
-                        input=text_to_convert
-                    )
-
-                    for chunk in response.iter_bytes():
-                        tts.extend(chunk)
-
-                    tts.extend(b'\x00' * (interline * 16000 // 1000))  # Add interline interval
-
-            with open(speech_file_path, 'wb') as audio_file:
-                audio_file.write(tts)
-
-            success_message.success("Speech conversion successful!")
-            warning_message.warning("Disclosure: The voice you are hearing is AI-generated and not a human voice.\n고지 사항: 이 목소리는 인공지능(AI)으로 생성된 것이며, 실제 사람의 목소리가 아닙니다.")
-            audio_placeholder.audio(str(speech_file_path))
-
-        except Exception as e:
-            success_message.error(f"An error occurred: {e}")
-
+    
     if 'input_text' not in st.session_state:
         st.session_state.input_text = """1. 다음을 듣고, 남자가 하는 말의 목적으로 가장 적절한 것을 고르시오.
                                 M: Hello, Lockwood High School students. This is your school librarian,
@@ -144,3 +88,50 @@ else:
                                 M: I see. I’ll save them for you."""
 
     text_input = st.text_area("Enter the text you want to convert to speech", st.session_state.input_text, key="input_area", height=st.session_state.input_text.count('\n') * 24)
+
+    if col_buttons.button("Preprocessing"):
+        for line in st.session_state.input_text.split("\n"):
+            if ":" in line:
+                name, talk = line.split(":", 1)
+            elif which_eng_kor(line) == "ko":
+                name, talk = extract_question(line)
+                if not name:
+                    name, talk = "", line
+            else:
+                name, talk = "", line
+
+            col_lang.markdown(which_eng_kor(line))
+            col_name.markdown(name.strip())
+            col_line.markdown(talk.strip())
+
+    if col_buttons.button("Convert to Speech"):
+        try:
+            final_output = "final_speech.wav"
+            with wave.open(final_output, 'wb') as final_wf:
+                for line in st.session_state.input_text.split("\n"):
+                    if line.strip() == "":
+                        continue
+
+                    if which_eng_kor(line) == "ko":
+                        tts = gTTS(line, lang='ko')
+                        temp_file = f"temp.wav"
+                        tts.save(temp_file)
+                    else:
+                        response = client.audio.speech.create(
+                            model="tts-1-hd",
+                            voice=option,
+                            input=line
+                        )
+                        temp_file = f"temp.wav"
+                        with open(temp_file, 'wb') as audio_file:
+                            for chunk in response.iter_bytes():
+                                audio_file.write(chunk)
+                    
+                    append_audio_file(final_wf, temp_file)
+                    os.remove(temp_file)
+
+            st.success("Speech conversion successful!")
+            st.audio(final_output)
+
+        except Exception as e:
+            st.error(f"An error occurred: {e}")
