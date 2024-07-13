@@ -67,15 +67,17 @@ else:
     audio_placeholder = col_btn2.empty()
     if 'input_text' not in st.session_state:
         st.session_state.input_text = """1. 다음을 듣고, 남자가 하는 말의 목적으로 가장 적절한 것을 고르시오.
-                                M: Hello, Lockwood High School students. This is your school librarian, Mr. Wilkins.
-                                I’m sure you’re aware that our school library is hosting a bookmark design competition.
+M: Hello, Maplewood High School students. This is your school librarian, Mr. Johnson. I want to remind you that our school library is hosting a book review contest.
+#1. testing the app.
+#2. tasting the app.
+#3. toasting the app.
 
-                                2번 대화를 듣고, 여자의 의견으로 가장 적절한 것을 고르시오.
-                                M: Honey, do you want some apples with breakfast?
-                                W: Sounds great. Can you save the apple peels for me?
-                                M: Why? What do you want them for?
-                                W: I’m going to use them to make a face pack. Apple peels are effective for improving skin condition."""
-    st.code("아래 예시문장을 지우고 듣기평가 대본을 넣어 주세요.\n음성지표에 따라 음성이 바뀝니다.(M:남성,W:여성)",language="haskell")
+2번 다음 대화를 듣고, 여자의 의견으로 가장 적절한 것을 고르시오.
+M: Sweetie, would you like some oranges for breakfast?
+W: Sounds wonderful. Could you keep the orange peels for me?
+M: Why? What are you going to do with them?
+W: I’m planning to use them to make a natural cleaner. Orange peels are great for cleaning surfaces."""
+    st.code("아래 예시문장을 지우고 듣기평가 대본을 넣어 주세요.\n음성지표에 따라 음성이 바뀝니다.(M:남성,W:여성), 예시문 원본 출처:EBS", language="haskell")
     st.session_state.input_text = st.text_area("대본입력 후 CTRL+ENTER", st.session_state.input_text, key="input_area", height=max(st.session_state.input_text.count('\n') * 30+10,600))
 
 
