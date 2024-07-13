@@ -97,10 +97,10 @@ else:
                                 W: Right. Apple peels can help improve our skin condition.
                                 M: I see. I’ll save them for you."""
 
-    text_input = st.text_area("Enter the text you want to convert to speech", st.session_state.input_text, key="input_area", height=st.session_state.input_text.count('\n') * 24)
+    st.session_state.input_text = st.text_area("Enter the text you want to convert to speech", st.session_state.input_text, key="input_area", height=st.session_state.input_text.count('\n') * 24)
 
 
-    if col_btn1.button("음원\n생성",disabled=is_input_exist(text_input)):
+    if col_btn1.button("음원\n생성",disabled=is_input_exist(st.session_state.input_text)):
         try:
             speech_file_path = Path("speech.mp3")
             input_text = st.session_state.input_text
