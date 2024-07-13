@@ -32,37 +32,6 @@ else:
 
     st.title("Text-to-Speech with OpenAI")
 
-    if 'input_text' not in st.session_state:
-        st.session_state.input_text = """1. 다음을 듣고, 남자가 하는 말의 목적으로 가장 적절한 것을 고르시오.
-                                M: Hello, Lockwood High School students. This is your school librarian,
-                                Mr. Wilkins. I’m sure you’re aware that our school library is hosting a
-                                bookmark design competition. I encourage students of all grades to
-                                participate in the competition. The winning designs will be made into
-                                bookmarks, which will be distributed to library visitors. We’re also giving
-                                out a variety of other prizes. So don’t let this great opportunity slip away.
-                                Since the registration period for the bookmark design competition ends this
-                                Friday, make sure you visit our school library to submit your application.
-                                Come and participate to display your creativity and talents.
-
-                                2. 대화를 듣고, 여자의 의견으로 가장 적절한 것을 고르시오.
-                                M: Honey, do you want some apples with breakfast?
-                                W: Sounds great. Can you save the apple peels for me?
-                                M: Why? What do you want them for?
-                                W: I’m going to use them to make a face pack. Apple peels are effective for
-                                improving skin condition.
-                                M: Where did you hear about that?
-                                W: I recently read an article about their benefits for our skin.
-                                M: Interesting. What’s in them?
-                                W: It said apple peels are rich in vitamins and minerals, so they moisturize our
-                                skin and enhance skin glow.
-                                M: That’s good to know.
-                                W: Also, they remove oil from our skin and have a cooling effect.
-                                M: Wow! Then I shouldn’t throw them away.
-                                W: Right. Apple peels can help improve our skin condition.
-                                M: I see. I’ll save them for you."""
-
-    text_input = st.text_area("Enter the text you want to convert to speech", st.session_state.input_text, key="input_area", height=st.session_state.input_text.count('\n') * 24)
-
     col_kr_voice, col_fe_voice, col_ma_voice, col_interval = st.columns([3, 3, 3, 3])
     ko_option = col_kr_voice.radio("Select a Korean voice.", ['alloy', 'echo', 'fable', 'nova', 'onyx', 'shimmer'], key="korean_option", index=2)
     female_voice = col_fe_voice.radio("Select a female voice.", ['alloy', 'fable', 'nova', 'shimmer'], key="female_option")
@@ -95,7 +64,37 @@ else:
     en_warning_message = st.empty()
     audio_placeholder = st.empty()
     kr_warning_message = st.empty()
+    if 'input_text' not in st.session_state:
+        st.session_state.input_text = """1. 다음을 듣고, 남자가 하는 말의 목적으로 가장 적절한 것을 고르시오.
+                                M: Hello, Lockwood High School students. This is your school librarian,
+                                Mr. Wilkins. I’m sure you’re aware that our school library is hosting a
+                                bookmark design competition. I encourage students of all grades to
+                                participate in the competition. The winning designs will be made into
+                                bookmarks, which will be distributed to library visitors. We’re also giving
+                                out a variety of other prizes. So don’t let this great opportunity slip away.
+                                Since the registration period for the bookmark design competition ends this
+                                Friday, make sure you visit our school library to submit your application.
+                                Come and participate to display your creativity and talents.
+
+                                2. 대화를 듣고, 여자의 의견으로 가장 적절한 것을 고르시오.
+                                M: Honey, do you want some apples with breakfast?
+                                W: Sounds great. Can you save the apple peels for me?
+                                M: Why? What do you want them for?
+                                W: I’m going to use them to make a face pack. Apple peels are effective for
+                                improving skin condition.
+                                M: Where did you hear about that?
+                                W: I recently read an article about their benefits for our skin.
+                                M: Interesting. What’s in them?
+                                W: It said apple peels are rich in vitamins and minerals, so they moisturize our
+                                skin and enhance skin glow.
+                                M: That’s good to know.
+                                W: Also, they remove oil from our skin and have a cooling effect.
+                                M: Wow! Then I shouldn’t throw them away.
+                                W: Right. Apple peels can help improve our skin condition.
+                                M: I see. I’ll save them for you."""
+
     text_input = st.text_area("Enter the text you want to convert to speech", st.session_state.input_text, key="input_area", height=st.session_state.input_text.count('\n') * 24)
+
 
     if col_btn2.button("Convert to Speech"):
         try:
