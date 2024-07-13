@@ -40,7 +40,7 @@ def extract_question(text):
         print(number, question,sep="\n")
         return number, question
     else:
-        return None, text
+        return None, text.lstrip()
 
 load_dotenv()
 
