@@ -75,8 +75,8 @@ else:
                                 W: Sounds great. Can you save the apple peels for me?
                                 M: Why? What do you want them for?
                                 W: I’m going to use them to make a face pack. Apple peels are effective for improving skin condition."""
-
-    st.session_state.input_text = st.text_area("듣기평가 대본을 넣어 주세요. 음성지표에 따라 음성이 바뀝니다.(M:남성,W:여성)", st.session_state.input_text, key="input_area", height=st.session_state.input_text.count('\n') * 30+10)
+    st.code("아래 예시문장을 지우고 듣기평가 대본을 넣어 주세요.\n음성지표에 따라 음성이 바뀝니다.(M:남성,W:여성)",language="haskell")
+    st.session_state.input_text = st.text_area("대본입력 후 CTRL+ENTER", st.session_state.input_text, key="input_area", height=max(st.session_state.input_text.count('\n') * 30+10,600))
 
 
     if col_interval.button("음원 생성",disabled=is_input_exist(st.session_state.input_text)):
