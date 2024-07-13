@@ -33,10 +33,11 @@ def which_eng_kor(input_s):
     return "ko" if k_count > e_count else "en"
 
 def extract_question(text):
-    match = re.match(r'(\d{1,2}\.?)\s*(.*)', text)
+    match = re.match(r'(\d{1,2}\s*\.?\s*번?)\s*(.*)', text)
     if match:
         number = match.group(1).strip()
         question = match.group(2).strip()
+        print(number, question,sep="\n")
         return number, question
     else:
         return None, text
@@ -73,31 +74,16 @@ else:
                                 M: Hello, Lockwood High School students. This is your school librarian,
                                 Mr. Wilkins. I’m sure you’re aware that our school library is hosting a
                                 bookmark design competition. I encourage students of all grades to
-                                participate in the competition. The winning designs will be made into
-                                bookmarks, which will be distributed to library visitors. We’re also giving
-                                out a variety of other prizes. So don’t let this great opportunity slip away.
-                                Since the registration period for the bookmark design competition ends this
-                                Friday, make sure you visit our school library to submit your application.
-                                Come and participate to display your creativity and talents.
+                                participate in the competition.
 
-                                2. 대화를 듣고, 여자의 의견으로 가장 적절한 것을 고르시오.
+                                2번 대화를 듣고, 여자의 의견으로 가장 적절한 것을 고르시오.
                                 M: Honey, do you want some apples with breakfast?
                                 W: Sounds great. Can you save the apple peels for me?
                                 M: Why? What do you want them for?
                                 W: I’m going to use them to make a face pack. Apple peels are effective for
-                                improving skin condition.
-                                M: Where did you hear about that?
-                                W: I recently read an article about their benefits for our skin.
-                                M: Interesting. What’s in them?
-                                W: It said apple peels are rich in vitamins and minerals, so they moisturize our
-                                skin and enhance skin glow.
-                                M: That’s good to know.
-                                W: Also, they remove oil from our skin and have a cooling effect.
-                                M: Wow! Then I shouldn’t throw them away.
-                                W: Right. Apple peels can help improve our skin condition.
-                                M: I see. I’ll save them for you."""
+                                improving skin condition."""
 
-    st.session_state.input_text = st.text_area("Enter the text you want to convert to speech", st.session_state.input_text, key="input_area", height=st.session_state.input_text.count('\n') * 24)
+    st.session_state.input_text = st.text_area("듣기평가 대본을 넣어 주세요. 음성지표에 따라 음성이 바뀝니다.(M:남성,W:여성)", st.session_state.input_text, key="input_area", height=st.session_state.input_text.count('\n') * 24)
 
 
     if col_btn1.button("음원\n생성",disabled=is_input_exist(st.session_state.input_text)):
@@ -123,7 +109,11 @@ else:
 
                 number, sentence = extract_question(sentence)
                 if number:
-                    text_to_convert = f"{number}번 {sentence}"
+                    if number[-1]=="번":
+                        text_to_convert = f"{number[:-1]}번\n'.....'\n {sentence}"
+                    else:
+                        text_to_convert = f"{number}번\n'.....'\n {sentence}"
+                    
                 else:
                     text_to_convert = sentence
 
