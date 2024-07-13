@@ -10,7 +10,7 @@ import re
 st.markdown(
     """
     <style>
-    h3{font-size: 14px;}
+    h3{font-size: 14px;text-align: right;}
     h1{font-size: 36px;}
     div.stButton > button,div.stDownloadButton > button {
         height: 54px;
