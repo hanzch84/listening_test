@@ -61,6 +61,7 @@ else:
                                 W: Right. Apple peels can help improve our skin condition.
                                 M: I see. I’ll save them for you."""
 
+    text_input = st.text_area("Enter the text you want to convert to speech", st.session_state.input_text, key="input_area", height=st.session_state.input_text.count('\n') * 24)
 
     col_kr_voice, col_fe_voice, col_ma_voice, col_interval = st.columns([3, 3, 3, 3])
     ko_option = col_kr_voice.radio("Select a Korean voice.", ['alloy', 'echo', 'fable', 'nova', 'onyx', 'shimmer'], key="korean_option", index=2)
@@ -146,11 +147,16 @@ else:
         except Exception as e:
             st.session_state.success_message = f"An error occurred: {e}"
     
-
-
     if 'speech_file_path' in st.session_state:
         success_message.success(st.session_state.success_message)
         en_warning_message.warning(st.session_state.en_warning_message)
         kr_warning_message.warning(st.session_state.kr_warning_message)
         audio_placeholder.audio(st.session_state.speech_file_path)
-    
+        
+        with open(st.session_state.speech_file_path, "rb") as file:
+            btn = st.download_button(
+                label="Download MP3",
+                data=file,
+                file_name="speech.mp3",
+                mime="audio/mpeg"
+            )
