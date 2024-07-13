@@ -53,17 +53,15 @@ else:
 
     st.title("듣기평가 음원 만들기")
 
-    col_kr_voice, col_fe_voice, col_ma_voice, col_interval = st.columns([3, 3, 3, 3])
-    ko_option = col_kr_voice.radio("Korean voice.", ['alloy', 'echo', 'fable', 'nova', 'onyx', 'shimmer'], key="korean_option", index=2)
-    female_voice = col_fe_voice.radio("Female voice.", ['alloy', 'fable', 'nova', 'shimmer'], key="female_option")
-    male_voice = col_ma_voice.radio("Male voice.", ['echo', 'onyx'], key="male_option")
-    interline = col_interval.number_input("대사 간 간격(ms)", value=300, min_value=30, max_value=3000, key="interline")
-    internum = col_interval.number_input("문제 간 간격(ms)", value=300, min_value=30, max_value=3000, key="internum")
+    col_voice, col_interval = st.columns([9, 2])
+    ko_option = col_voice.radio("한국어 음성", ['alloy', 'echo', 'fable', 'nova', 'onyx', 'shimmer'], key="korean_option", index=2,horizontal=True)
+    female_voice = col_voice.radio("여성 음성", ['alloy', 'fable', 'nova', 'shimmer'], key="female_option",horizontal=True)
+    male_voice = col_voice.radio("남성 음성", ['echo', 'onyx'], key="male_option",horizontal=True)
+    interline = col_interval.number_input("대사 간격(ms)", value=300, min_value=30, max_value=3000, key="interline",disabled=True)
+    internum = col_interval.number_input("문제 간격(ms)", value=300, min_value=30, max_value=3000, key="internum",disabled=True)
 
-    col_btn1, col_btn2, col_btn3 = st.columns([1.5,8,3])
-    st.write = female_voice
+    col_btn2, col_btn3 = st.columns([8,3])
 
-    col_lang, col_name, col_line = st.columns([1, 2, 8])
 
 
     success_message = st.empty()
@@ -73,7 +71,6 @@ else:
         st.session_state.input_text = """1. 다음을 듣고, 남자가 하는 말의 목적으로 가장 적절한 것을 고르시오.
                                 M: Hello, Lockwood High School students. This is your school librarian, Mr. Wilkins.
                                 I’m sure you’re aware that our school library is hosting a bookmark design competition.
-                                I encourage students of all grades to participate in the competition.
 
                                 2번 대화를 듣고, 여자의 의견으로 가장 적절한 것을 고르시오.
                                 M: Honey, do you want some apples with breakfast?
@@ -84,7 +81,7 @@ else:
     st.session_state.input_text = st.text_area("듣기평가 대본을 넣어 주세요. 음성지표에 따라 음성이 바뀝니다.(M:남성,W:여성)", st.session_state.input_text, key="input_area", height=st.session_state.input_text.count('\n') * 30+10)
 
 
-    if col_btn1.button("음원\n생성",disabled=is_input_exist(st.session_state.input_text)):
+    if col_interval.button("음원 생성",disabled=is_input_exist(st.session_state.input_text)):
         try:
             speech_file_path = Path("speech.mp3")
             input_text = st.session_state.input_text
@@ -107,10 +104,7 @@ else:
 
                 number, sentence = extract_question(sentence)
                 if number:
-                    if number[-1]=="번":
-                        text_to_convert = f"{number[:-1]}번\n'.....'\n {sentence}"
-                    else:
-                        text_to_convert = f"{number}번\n'.....'\n {sentence}"
+                    text_to_convert = f"{number[:-1]}번.\n'.....'\n {sentence}"
                     
                 else:
                     text_to_convert = sentence
