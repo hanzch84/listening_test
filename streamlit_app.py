@@ -10,6 +10,8 @@ import re
 st.markdown(
     """
     <style>
+    p{font-size: 14px;}
+    h1{font-size: 36px;}
     div.stButton > button,div.stDownloadButton > button {
         height: 54px;
         font-size: 24px;
@@ -37,7 +39,6 @@ def extract_question(text):
     if match:
         number = match.group(1).strip()
         question = match.group(2).strip()
-        print(number, question,sep="\n")
         return number, question
     else:
         return None, text.lstrip()
@@ -51,8 +52,8 @@ if not api_key:
 else:
     client = OpenAI(api_key=api_key)
 
-    st.title("듣기평가 음원 만들기")
-
+    st.title("듣기평가 음원 만들기: En Listen")
+    st.write("교사 박현수, 버그 및 개선 문의: hanzch84@gmail.com")
     col_voice, col_interval = st.columns([9, 2])
     ko_option = col_voice.radio("한국어 음성", ['alloy', 'echo', 'fable', 'nova', 'onyx', 'shimmer'], key="korean_option", index=2,horizontal=True)
     female_voice = col_voice.radio("여성 음성", ['alloy', 'fable', 'nova', 'shimmer'], key="female_option",horizontal=True)
@@ -61,9 +62,6 @@ else:
     internum = col_interval.number_input("문제 간격(ms)", value=300, min_value=30, max_value=3000, key="internum",disabled=True)
 
     col_btn2, col_btn3 = st.columns([8,3])
-
-
-
     success_message = st.empty()
     warning_message = st.empty()
     audio_placeholder = col_btn2.empty()
@@ -82,6 +80,20 @@ else:
 
 
     if col_interval.button("음원 생성",disabled=is_input_exist(st.session_state.input_text)):
+        # 스피너를 표시하면서 계산 진행 오버레이와 스피너를 위한 컨테이너 생성
+        overlay_container = st.empty()
+        # 오버레이와 스피너 추가
+        overlay_container.markdown("""
+        <style>
+        .overlay {
+            position: fixed;top: 0;left: 0;width: 100%;height: 100%;
+            background: rgba(0, 0, 0, 0.7);z-index: 999;display: flex;
+            justify-content: center;align-items: center;                }
+        .spinner {margin-bottom: 10px;}
+        </style>
+        <div class="overlay"><div><div class="spinner">
+                    <span class="fa fa-spinner fa-spin fa-3x"></span>
+                </div><div style="color: white;">음원을 출력하는 중...</div></div></div>""", unsafe_allow_html=True)
         try:
             speech_file_path = Path("speech.mp3")
             input_text = st.session_state.input_text
@@ -130,6 +142,8 @@ else:
 
         except Exception as e:
             st.session_state.success_message = f"An error occurred: {e}"
+        # 작업이 완료되면 오버레이와 스피너를 제거합니다.
+        overlay_container.empty()
     
     if 'speech_file_path' in st.session_state:
         success_message.success(st.session_state.success_message)
