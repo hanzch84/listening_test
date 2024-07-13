@@ -71,19 +71,17 @@ else:
     audio_placeholder = col_btn2.empty()
     if 'input_text' not in st.session_state:
         st.session_state.input_text = """1. 다음을 듣고, 남자가 하는 말의 목적으로 가장 적절한 것을 고르시오.
-                                M: Hello, Lockwood High School students. This is your school librarian,
-                                Mr. Wilkins. I’m sure you’re aware that our school library is hosting a
-                                bookmark design competition. I encourage students of all grades to
-                                participate in the competition.
+                                M: Hello, Lockwood High School students. This is your school librarian, Mr. Wilkins.
+                                I’m sure you’re aware that our school library is hosting a bookmark design competition.
+                                I encourage students of all grades to participate in the competition.
 
                                 2번 대화를 듣고, 여자의 의견으로 가장 적절한 것을 고르시오.
                                 M: Honey, do you want some apples with breakfast?
                                 W: Sounds great. Can you save the apple peels for me?
                                 M: Why? What do you want them for?
-                                W: I’m going to use them to make a face pack. Apple peels are effective for
-                                improving skin condition."""
+                                W: I’m going to use them to make a face pack. Apple peels are effective for improving skin condition."""
 
-    st.session_state.input_text = st.text_area("듣기평가 대본을 넣어 주세요. 음성지표에 따라 음성이 바뀝니다.(M:남성,W:여성)", st.session_state.input_text, key="input_area", height=st.session_state.input_text.count('\n') * 24)
+    st.session_state.input_text = st.text_area("듣기평가 대본을 넣어 주세요. 음성지표에 따라 음성이 바뀝니다.(M:남성,W:여성)", st.session_state.input_text, key="input_area", height=st.session_state.input_text.count('\n') * 30+10)
 
 
     if col_btn1.button("음원\n생성",disabled=is_input_exist(st.session_state.input_text)):
