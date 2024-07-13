@@ -53,7 +53,7 @@ else:
     client = OpenAI(api_key=api_key)
 
     st.title("듣기평가 음원 만들기: En Listen")
-    st.write('''교사 박현수, 버그 및 개선 문의: hanzch84@gmail.com''')
+    st.subheader('교사 박현수, 버그 및 개선 문의: hanzch84@gmail.com')
     col_voice, col_interval = st.columns([9, 2])
     ko_option = col_voice.radio("한국어 음성", ['alloy', 'echo', 'fable', 'nova', 'onyx', 'shimmer'], key="korean_option", index=2,horizontal=True)
     female_voice = col_voice.radio("여성 음성", ['alloy', 'fable', 'nova', 'shimmer'], key="female_option",horizontal=True)
