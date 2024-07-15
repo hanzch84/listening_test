@@ -134,12 +134,12 @@ M: Why? What are you going to do with them?
 W: I’m planning to use them to make a natural cleaner.
 Orange peels are great for cleaning surfaces."""
 
-    st.code("""아래 '대본 입력란'에서 예시 대본을 지우고 듣기평가 대본을 입력하세요.
-번호는 줄의 처음에 숫자와 '번'또는 '.'을 쓰면 인식합니다.
-각 행 맨 앞 음성지표(M:남성,W:여성)가 바뀌면 음성 성별이 바뀝니다.
-random 은 문제마다 해당 성별의 음성 중 무작위의 음성을 선택합니다.
-sequential 은 문제마다 사용 가능한 해당 성별의 음성을 차례로 바꿔 줍니다.
-문장과 문제의 간격 조절은 아직 구현 중입니다. (각색된 예시 대본 원본 출처:EBS)""", language="haskell")
+    st.code("""'대본 입력란'의 예시를 지우고 듣기평가 대본을 입력하세요.
+행의 처음에 숫자와 '번'또는 '.'을 쓰면 문제번호를 인식합니다.
+행의 처음에 음성지표(M:남성,W:여성)가 바뀌면 음성 성별이 바뀝니다.
+random 은 문제마다 해당 성별의 음성을 무작위로 선택합니다.
+sequential 은 문제마다 해당 성별의 음성을 순서대로 바꿔 줍니다.
+문장, 문제 간격 조절은 구현 중입니다. (각색된 예시 대본 원본 출처:EBS)""", language="haskell")
     st.session_state.input_text = st.text_area("대본 입력란", st.session_state.input_text, key="input_area", height=max(st.session_state.input_text.count('\n') * 30+10, 600))
 
     if col_interval.button("🔊 음원 생성하기", disabled=is_input_exist(st.session_state.input_text),):
