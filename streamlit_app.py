@@ -84,7 +84,9 @@ else:
     client = OpenAI(api_key=api_key)
 
     st.title("듣기평가 음원 만들기: En Listen")
-    st.subheader('교사 박현수, 버그 및 개선 문의: hanzch84@gmail.com')
+    col_speed, col_subheader = st.columns([5, 7])
+    speed_rate = col_speed.slider("음성 속도(배)", 0.55,1.85,1.0,0.05)
+    col_subheader.subheader('교사 박현수, 버그 및 개선 문의: hanzch84@gmail.com')
     col_voice, col_interval = st.columns([10, 3])
     ko_option = col_voice.radio("한국어 음성", ['alloy', 'echo', 'fable', 'nova', 'onyx', 'shimmer'], key="korean_option", index=2, horizontal=True,help="한국어 음성을 선택하세요.")
     female_voice = col_voice.radio("여성 음성", ['alloy', 'fable', 'nova', 'shimmer', "sequential", "random"], key="female_option", horizontal=True,help="여성 음성을 선택하세요. random은 문제마다 무작위의 음성을 선택합니다. sequential은 문제마다 음성을 차례로 바꿔 줍니다.")
@@ -207,7 +209,8 @@ sequential 은 문제마다 해당 성별의 음성을 순서대로 바꿔 줍�
                     response = client.audio.speech.create(
                         model="tts-1",
                         voice=current_voice,
-                        input=text_to_convert
+                        input=text_to_convert,
+                        speed=speed_rate
                     )
                     print(f"Text to convert: {text_to_convert}, Using voice: {current_voice}")
 
