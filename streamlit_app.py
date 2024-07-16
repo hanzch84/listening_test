@@ -205,7 +205,7 @@ sequential 은 문제마다 해당 성별의 음성을 순서대로 바꿔 줍�
 
                 if text_to_convert.strip():
                     response = client.audio.speech.create(
-                        model="tts-1-hd",
+                        model="tts-1",
                         voice=current_voice,
                         input=text_to_convert
                     )
