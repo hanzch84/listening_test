@@ -77,6 +77,7 @@ def add_silence(tts, duration_ms):
 
 load_dotenv()
 
+
 api_key = os.getenv('OPENAI_API_KEY')
 
 if not api_key:
