@@ -145,13 +145,13 @@ Orange peels are great for cleaning surfaces."""
         <style>
         .overlay {
             position: fixed;top: 0;left: 0;width: 100%;height: 100%;
-            background: rgba(0, 0, 0, 0.7);z-index: 999;display: flex;
+            background: rgba(0, 0, 0, 0.6);z-index: 999;display: flex;
             justify-content: center;align-items: center;                }
         .spinner {margin-bottom: 10px;}
         </style>
         <div class="overlay"><div><div class="spinner">
                     <span class="fa fa-spinner fa-spin fa-3x"></span>
-                </div><div style="color: white;">음원을 출력하는 중...</div></div></div>""", unsafe_allow_html=True)
+                </div><div style="color: white;">🔊음원을 출력하는 중...</div></div></div>""", unsafe_allow_html=True)
         try:
             speech_file_path = Path("speech.mp3")
             input_text = st.session_state.input_text
