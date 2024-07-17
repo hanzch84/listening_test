@@ -111,7 +111,7 @@ else:
     print(f"Selected male voice: {male_voice}")
 
     interline = 1000*col_interval.slider("대사 간격(s)", min_value=0.2, max_value=2.0, value=0.7, step=0.1, key="interline", disabled=False, help="문장 사이의 무음 구간 길이")
-    internum = col_interval.slider("문제 간격(s)", min_value=1, max_value=15, value=10, key="internum", disabled=False, help="문제와 문제 사이의 무음 구간 길이")
+    internum = col_interval.slider("문제 간격(s)", min_value=1, max_value=25, value=10, key="internum", disabled=False, help="문제와 문제 사이의 무음 구간 길이")
 
     # 무음을 미리 생성
     interline_silence = AudioSegment.silent(duration=interline)
