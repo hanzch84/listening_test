@@ -4,3 +4,4 @@ python-dotenv
 google-cloud-texttospeech
 gtts
 wave
+pydub
