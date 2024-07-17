@@ -102,9 +102,9 @@ else:
     col_subheader.markdown('<p style="font-size:10pt; color: #6b6c70;text-align: right;">제작: 교사 박현수, 버그 및 개선 문의: <a href="mailto:hanzch84@gmail.com">hanzch84@gmail.com</a></p>', unsafe_allow_html=True)
     col_subheader.markdown('<p style="font-size:13pt; color: #6b6c70;text-align: right;"><a href="https://platform.openai.com/docs/guides/text-to-speech/voice-options">음성 옵션 미리듣기(openai TTS api overview page)</a></p>', unsafe_allow_html=True)
     col_voice, col_interval = st.columns([10, 3])
-    ko_option = col_voice.radio("한국어 음성", ['Alloy', 'Echo', 'Fable', 'Nova', 'Onyx', 'Shimmer'], key="korean_option", index=2, horizontal=True, help="한국어 음성을 선택하세요.")
-    female_voice = col_voice.radio("여성 음성", ['Alloy', 'Fable', 'Nova', 'Shimmer', "order", "random"], key="female_option", horizontal=True, help="여성 음성을 선택하세요. random은 문제마다 무작위의 음성을 선택합니다. sequential은 문제마다 음성을 차례로 바꿔 줍니다.")
-    male_voice = col_voice.radio("남성 음성", ['Echo', 'Onyx', "order", "random"], key="male_option", horizontal=True, help="남성 음성을 선택하세요. random은 문제마다 무작위의 음성을 선택합니다. sequential은 문제마다 음성을 차례로 바꿔 줍니다.")
+    ko_option = col_voice.radio("한국어 음성", ['alloy', 'echo', 'fable', 'nova', 'onyx', 'shimmer'], key="korean_option", index=2, horizontal=True, help="한국어 음성을 선택하세요.")
+    female_voice = col_voice.radio("여성 음성", ['alloy', 'fable', 'nova', 'shimmer', "order", "random"], key="female_option", horizontal=True, help="여성 음성을 선택하세요. random은 문제마다 무작위의 음성을 선택합니다. sequential은 문제마다 음성을 차례로 바꿔 줍니다.")
+    male_voice = col_voice.radio("남성 음성", ['echo', 'onyx', "order", "random"], key="male_option", horizontal=True, help="남성 음성을 선택하세요. random은 문제마다 무작위의 음성을 선택합니다. sequential은 문제마다 음성을 차례로 바꿔 줍니다.")
 
     print(f"Selected Korean voice: {ko_option}")
     print(f"Selected female voice: {female_voice}")
