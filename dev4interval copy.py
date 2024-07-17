@@ -6,25 +6,14 @@ from dotenv import load_dotenv
 from collections import Counter
 import re
 import random
-from pydub import AudioSegment
-from io import BytesIO
+from pydub import AudioSegment  # 추가된 부분
+from io import BytesIO  # 추가된 부분
 
 # CSS 스타일 추가
 st.markdown(
     """
     <style>
-        a:link {
-            color : #ff4b4b;
-        }
-        a:visited {
-            color : #ffa657;
-        }
-        a:hover {
-            color : red;
-        }
-        a:active {
-            color : green
-        }
+    p{font-size: 14px;text-align: right;}
     h1{font-size: 36px;}
     div.stButton > button,div.stDownloadButton > button {
         height: 54px;
@@ -65,7 +54,7 @@ def merge_lines(lines):
             current_sentence = ""
         else:
             current_sentence += " " + line
-    if current_sentence:
+    if (current_sentence):
         merged.append(current_sentence.strip())
     return merged
 
@@ -99,8 +88,7 @@ else:
     st.title("듣기평가 음원 만들기: En Listen")
     col_speed, col_subheader = st.columns([5, 7])
     speed_rate = col_speed.slider("음성 속도(배)", 0.55, 1.85, 1.0, 0.05)
-    col_subheader.markdown('<p style="font-size:10pt; color: #777777;text-align: right;">제작: 교사 박현수, 버그 및 개선 문의: <a href="mailto:hanzch84@gmail.com">hanzch84@gmail.com</a></p>', unsafe_allow_html=True)
-    col_subheader.markdown('<p style="font-size:12pt; color: #777777;text-align: right;"><a href="https://platform.openai.com/docs/guides/text-to-speech/voice-options">음성 옵션 미리듣기(openai TTS api overview page)</a></p>', unsafe_allow_html=True)
+    col_subheader.write('제작: 교사 박현수, 오류 및 개선 문의: hanzch84@gmail.com')
     col_voice, col_interval = st.columns([10, 3])
     ko_option = col_voice.radio("한국어 음성", ['alloy', 'echo', 'fable', 'nova', 'onyx', 'shimmer'], key="korean_option", index=2, horizontal=True, help="한국어 음성을 선택하세요.")
     female_voice = col_voice.radio("여성 음성", ['alloy', 'fable', 'nova', 'shimmer', "sequential", "random"], key="female_option", horizontal=True, help="여성 음성을 선택하세요. random은 문제마다 무작위의 음성을 선택합니다. sequential은 문제마다 음성을 차례로 바꿔 줍니다.")
@@ -110,8 +98,8 @@ else:
     print(f"Selected female voice: {female_voice}")
     print(f"Selected male voice: {male_voice}")
 
-    interline = 1000*col_interval.slider("대사 간격(s)", min_value=0.2, max_value=2.0, value=0.7, step=0.1, key="interline", disabled=False, help="문장 사이의 무음 구간 길이")
-    internum = col_interval.slider("문제 간격(s)", min_value=1, max_value=15, value=10, key="internum", disabled=False, help="문제와 문제 사이의 무음 구간 길이")
+    interline = col_interval.slider("대사 간격(ms)", min_value=30, max_value=1000, value=200, key="interline", disabled=False, help="문장 사이의 무음 구간 길이")
+    internum = col_interval.slider("문제 간격(s)", min_value=1, max_value=15, value=5, key="internum", disabled=False, help="문제와 문제 사이의 무음 구간 길이")
 
     # 무음을 미리 생성
     interline_silence = AudioSegment.silent(duration=interline)
@@ -154,11 +142,11 @@ W: I’m planning to use them to make a natural cleaner.
 Orange peels are great for cleaning surfaces."""
 
     st.code("""'대본 입력란'의 예시를 지우고 듣기평가 대본을 입력하세요.
-앞에 숫자와 '번'또는 '.'을 쓰면 문제번호를 인식합니다.
-앞에 음성지표(M:남성,W:여성)를 넣으면 해당 성별 음성으로 바뀝니다.
-'random' 은 문제마다 해당 성별의 음성을 무작위로 선택합니다.
-'sequential' 은 문제마다 해당 성별의 음성을 순서대로 바꿔 줍니다.
-문장, 문제 간격을 조절할 수 있습니다. (각색된 예시 대본 원본 출처:EBS)""", language="haskell")
+행의 처음에 숫자와 '번'또는 '.'을 쓰면 문제번호를 인식합니다.
+행의 처음에 음성지표(M:남성,W:여성)가 바뀌면 음성 성별이 바뀝니다.
+random 은 문제마다 해당 성별의 음성을 무작위로 선택합니다.
+sequential 은 문제마다 해당 성별의 음성을 순서대로 바꿔 줍니다.
+문장, 문제 간격 조절은 구현 중입니다. (각색된 예시 대본 원본 출처:EBS)""", language="haskell")
     st.session_state.input_text = st.text_area("대본 입력란", st.session_state.input_text, key="input_area", height=max(st.session_state.input_text.count('\n') * 30 + 10, 600))
 
     if col_interval.button("🔊 음원 생성하기", disabled=is_input_exist(st.session_state.input_text),):
@@ -183,7 +171,6 @@ Orange peels are great for cleaning surfaces."""
             sentences = merge_lines(lines)
             tts = AudioSegment.silent(duration=0)  # 초기 음성
             current_number = None
-            is_first_question = True  # 첫 문제 여부 확인 변수 추가
 
             current_female_voice = get_voice(female_voice, st.session_state.female_sequence, "female")
             current_male_voice = get_voice(male_voice, st.session_state.male_sequence, "male")
@@ -204,9 +191,7 @@ Orange peels are great for cleaning surfaces."""
                         st.session_state.male_sequence += 1
                         current_male_voice = get_voice(male_voice, st.session_state.male_sequence, "male")
 
-                    if not is_first_question:  # 첫 문제 앞에는 무음을 추가하지 않음
-                        tts += internum_silence  # 문제 간 무음 추가
-                    is_first_question = False
+                    tts += internum_silence  # 문제 간 무음 추가
 
                 if re.match(r'W:|W :', sentence):
                     current_voice = current_female_voice
