@@ -70,7 +70,7 @@ def merge_lines(lines):
     return merged
 
 def get_voice(option, idx, gender):
-    if option in ["random", "sequential"]:
+    if option in ["random", "order"]:
         if gender == "female":
             voices = ['alloy', 'fable', 'nova', 'shimmer']
         else:
@@ -102,9 +102,9 @@ else:
     col_subheader.markdown('<p style="font-size:10pt; color: #6b6c70;text-align: right;">제작: 교사 박현수, 버그 및 개선 문의: <a href="mailto:hanzch84@gmail.com">hanzch84@gmail.com</a></p>', unsafe_allow_html=True)
     col_subheader.markdown('<p style="font-size:13pt; color: #6b6c70;text-align: right;"><a href="https://platform.openai.com/docs/guides/text-to-speech/voice-options">음성 옵션 미리듣기(openai TTS api overview page)</a></p>', unsafe_allow_html=True)
     col_voice, col_interval = st.columns([10, 3])
-    ko_option = col_voice.radio("한국어 음성", ['alloy', 'echo', 'fable', 'nova', 'onyx', 'shimmer'], key="korean_option", index=2, horizontal=True, help="한국어 음성을 선택하세요.")
-    female_voice = col_voice.radio("여성 음성", ['alloy', 'fable', 'nova', 'shimmer', "sequential", "random"], key="female_option", horizontal=True, help="여성 음성을 선택하세요. random은 문제마다 무작위의 음성을 선택합니다. sequential은 문제마다 음성을 차례로 바꿔 줍니다.")
-    male_voice = col_voice.radio("남성 음성", ['echo', 'onyx', "sequential", "random"], key="male_option", horizontal=True, help="남성 음성을 선택하세요. random은 문제마다 무작위의 음성을 선택합니다. sequential은 문제마다 음성을 차례로 바꿔 줍니다.")
+    ko_option = col_voice.radio("한국어 음성", ['Alloy', 'Echo', 'Fable', 'Nova', 'Onyx', 'Shimmer'], key="korean_option", index=2, horizontal=True, help="한국어 음성을 선택하세요.")
+    female_voice = col_voice.radio("여성 음성", ['Alloy', 'Fable', 'Nova', 'Shimmer', "order", "random"], key="female_option", horizontal=True, help="여성 음성을 선택하세요. random은 문제마다 무작위의 음성을 선택합니다. sequential은 문제마다 음성을 차례로 바꿔 줍니다.")
+    male_voice = col_voice.radio("남성 음성", ['Echo', 'Onyx', "order", "random"], key="male_option", horizontal=True, help="남성 음성을 선택하세요. random은 문제마다 무작위의 음성을 선택합니다. sequential은 문제마다 음성을 차례로 바꿔 줍니다.")
 
     print(f"Selected Korean voice: {ko_option}")
     print(f"Selected female voice: {female_voice}")
@@ -156,8 +156,8 @@ Orange peels are great for cleaning surfaces."""
     st.code("""'대본 입력란'의 예시를 지우고 듣기평가 대본을 입력하세요.
 앞에 숫자와 '번'또는 '.'을 쓰면 문제번호를 인식합니다.
 앞에 음성지표(M:남성,W:여성)를 넣으면 해당 성별 음성으로 바뀝니다.
-'random' 은 문제마다 해당 성별의 음성을 무작위로 선택합니다.
-'sequential' 은 문제마다 해당 성별의 음성을 순서대로 바꿔 줍니다.
+'random'은 문제마다 해당 성별의 음성을 무작위로 선택합니다.
+'order'는 문제마다 해당 성별의 음성을 순서대로 바꿔 줍니다.
 문장, 문제 간격을 조절할 수 있습니다. (각색된 예시 대본 원본 출처:EBS)""", language="haskell")
     st.session_state.input_text = st.text_area("대본 입력란", st.session_state.input_text, key="input_area", height=max(st.session_state.input_text.count('\n') * 30 + 10, 600))
 
@@ -197,10 +197,10 @@ Orange peels are great for cleaning surfaces."""
 
                 if number and number != current_number:
                     current_number = number
-                    if female_voice in ["random", "sequential"]:
+                    if female_voice in ["random", "order"]:
                         st.session_state.female_sequence += 1
                         current_female_voice = get_voice(female_voice, st.session_state.female_sequence, "female")
-                    if male_voice in ["random", "sequential"]:
+                    if male_voice in ["random", "order"]:
                         st.session_state.male_sequence += 1
                         current_male_voice = get_voice(male_voice, st.session_state.male_sequence, "male")
 
