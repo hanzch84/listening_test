@@ -231,6 +231,7 @@ W: I’m planning to use them to make a natural cleaner."""
 
             tts.export(speech_file_path, format="mp3")
             st.session_state.speech_file_path = str(speech_file_path)
+            st.session_state.success_message = "음성 변환이 성공적으로 완료되었습니다!"
             st.session_state.en_warning_message = "고지 사항: 이 목소리는 인공지능(AI)으로 생성된 것이며, 실제 사람의 목소리가 아닙니다."
             print("Audio file saved successfully.")
 
