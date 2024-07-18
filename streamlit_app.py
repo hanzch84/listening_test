@@ -153,7 +153,7 @@ W: I’m planning to use them to make a natural cleaner."""
 'random'은 문제마다 해당 성별의 음성을 무작위로 선택합니다.
 'order'는 문제마다 해당 성별의 음성을 순서대로 바꿔 줍니다.
 문장, 문제 간격을 조절할 수 있습니다. (각색된 예시 대본 원본 출처:EBS)""", language="haskell")
-    st.session_state.input_text = st.text_area("대본 입력란", st.session_state.input_text, key="input_area", height=max(st.session_state.input_text.count('\n') * 30 + 10, 600))
+    st.session_state.input_text = st.text_area("대본 입력란", st.session_state.input_text, key="input_area", height=max(st.session_state.input_text.count('\n') * 26 + 10, 400))
 
     if col_interval.button("🔊 음원 생성하기", disabled=is_input_exist(st.session_state.input_text),):
         print("Generating audio...")
