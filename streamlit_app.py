@@ -100,9 +100,9 @@ else:
     col_speed, col_subheader = st.columns([5, 7])
     speed_rate = col_speed.slider("음성 속도(배)", 0.55, 1.85, 1.0, 0.05)
     col_subheader.markdown('<p style="font-size:10pt; color: #6b6c70;text-align: right;">제작: 교사 박현수, 버그 및 개선 문의: <a href="mailto:hanzch84@gmail.com">hanzch84@gmail.com</a></p>', unsafe_allow_html=True)
-    col_subheader.markdown('<p style="font-size:13pt; color: #6b6c70;text-align: right;"><a href="https://platform.openai.com/docs/guides/text-to-speech/voice-options">음성 옵션 미리듣기(openai TTS api overview page)</a></p>', unsafe_allow_html=True)
+    col_subheader.markdown('<p style="font-size:14pt; color: #6b6c70;text-align: right;"><a href="https://platform.openai.com/docs/guides/text-to-speech/voice-options">음성 옵션 미리듣기(openai TTS api overview page)</a></p>', unsafe_allow_html=True)
     col_voice, col_interval = st.columns([10, 3])
-    ko_option = col_voice.radio("한국어 음성", ['alloy', 'echo', 'fable', 'nova', 'onyx', 'shimmer'], key="korean_option", index=2, horizontal=True, help="한국어 음성을 선택하세요.")
+    ko_option = col_voice.radio("한국어 음성", ['alloy', 'fable', 'nova', 'shimmer', 'echo', 'onyx'], key="korean_option", index=2, horizontal=True, help="한국어 음성을 선택하세요.")
     female_voice = col_voice.radio("여성 음성", ['alloy', 'fable', 'nova', 'shimmer', "order", "random"], key="female_option", horizontal=True, help="여성 음성을 선택하세요. random은 문제마다 무작위의 음성을 선택합니다. sequential은 문제마다 음성을 차례로 바꿔 줍니다.")
     male_voice = col_voice.radio("남성 음성", ['echo', 'onyx', "order", "random"], key="male_option", horizontal=True, help="남성 음성을 선택하세요. random은 문제마다 무작위의 음성을 선택합니다. sequential은 문제마다 음성을 차례로 바꿔 줍니다.")
 
@@ -128,30 +128,24 @@ else:
     audio_placeholder = col_btn2.empty()
     if 'input_text' not in st.session_state:
         st.session_state.input_text = """1. 다음을 듣고, 남자가 하는 말의 목적으로 가장 적절한 것을 고르시오.
-M: Hello, Maplewood High School students. This is your school librarian, Mr. Johnson. 
-I want to remind you that our school library is hosting a book review contest.
-W: Number One.
-    testing the app.
+M: Hello, Maplewood High School students.
+This is your school librarian, Mr. Johnson. 
 
-W: Number Two.
-    tasting the app.
+W: Number One.
+    testing and tasting the app.
 
 W: Number Three.
-    toasting the app.
-
-W: Number Four.
-    twisting the app.
+    toasting and twisting the app.
 
 W: Number Five.
-    tossing the app.
+    tossing and trusting the app.
 
 
 2번 다음 대화를 듣고, 여자의 의견으로 가장 적절한 것을 고르시오.
-M: Sweetie, would you like some oranges for breakfast?
-W: Sounds wonderful. Could you keep the orange peels for me?
+M: Hi, Sweetie.
+W: Could you keep the orange peels for me?
 M: Why? What are you going to do with them?
-W: I’m planning to use them to make a natural cleaner.
-Orange peels are great for cleaning surfaces."""
+W: I’m planning to use them to make a natural cleaner."""
 
     st.code("""'대본 입력란'의 예시를 지우고 듣기평가 대본을 입력하세요.
 앞에 숫자와 '번'또는 '.'을 쓰면 문제번호를 인식합니다.
@@ -237,7 +231,6 @@ Orange peels are great for cleaning surfaces."""
 
             tts.export(speech_file_path, format="mp3")
             st.session_state.speech_file_path = str(speech_file_path)
-            st.session_state.success_message = "Speech conversion successful!"
             st.session_state.en_warning_message = "고지 사항: 이 목소리는 인공지능(AI)으로 생성된 것이며, 실제 사람의 목소리가 아닙니다."
             print("Audio file saved successfully.")
 
