@@ -46,35 +46,13 @@ def which_eng_kor(input_s):
     return "ko" if k_count > e_count else "en"
 
 def extract_question(text):
-    match = re.match(r'^\s*(\d+)\s*\.?\s*번?\s*(.*)', text)
+    match = re.match(r'(\d{1,2}\s*\.?\s*번?)\s*(.*)', text)
     if match:
         number = match.group(1).strip()
         question = match.group(2).strip()
         return number, question
-    return None, text.lstrip()
-
-
-def num_to_korean(n):
-    digit = ["", "일", "이", "삼", "사", "오", "육", "칠", "팔", "구"]
-    unit  = ["", "십", "백", "천"]
-    n = int(n)
-    if n == 0:
-        return "영"
-    result = ""
-    str_n = str(n)
-    length = len(str_n)
-    for i, ch in enumerate(str_n):
-        num = int(ch)
-        u = unit[length - i - 1]
-        if num == 0:
-            continue
-        # 만약 자릿수가 십·백·천이고 값이 1이면 '일' 생략
-        if num == 1 and u != "":
-            result += u
-        else:
-            result += digit[num] + u
-    return result
-
+    else:
+        return None, text.lstrip()
 
 def merge_lines(lines):
     merged = []
@@ -109,17 +87,6 @@ def get_voice(option, idx, gender):
         print(f"Selected {gender} voice: {option}")
         return option
 
-def extract_speaker(text):
-    m_match = re.match(r'^\s*M\s*:?\s*(.*)', text)
-    if m_match:
-        return "male", m_match.group(1).strip()
-    w_match = re.match(r'^\s*W\s*:?\s*(.*)', text)
-    if w_match:
-        return "female", w_match.group(1).strip()
-    return None, text
-
-
-
 load_dotenv()
 
 api_key = os.getenv('OPENAI_API_KEY')
@@ -129,7 +96,7 @@ if not api_key:
 else:
     client = OpenAI(api_key=api_key)
 
-    st.title("듣기평가 음원 만들기: En Listen(v.1.5)")
+    st.title("듣기평가 음원 만들기: En Listen")
     col_speed, col_subheader = st.columns([5, 7])
     speed_rate = col_speed.slider("음성 속도(배)", 0.55, 1.85, 1.0, 0.05)
     col_subheader.markdown('<p style="font-size:10pt; color: #6b6c70;text-align: right;">제작: 교사 박현수, 버그 및 개선 문의: <a href="mailto:hanzch84@gmail.com">hanzch84@gmail.com</a></p>', unsafe_allow_html=True)
@@ -160,7 +127,7 @@ else:
     warning_message = st.empty()
     audio_placeholder = col_btn2.empty()
     if 'input_text' not in st.session_state:
-        st.session_state.input_text = """13. 다음을 듣고, 남자가 하는 말의 목적으로 가장 적절한 것을 고르시오.
+        st.session_state.input_text = """1. 다음을 듣고, 남자가 하는 말의 목적으로 가장 적절한 것을 고르시오.
 M: Hello, Maplewood High School students.
 This is your school librarian, Mr. Johnson. 
 
@@ -174,7 +141,7 @@ W: Number Five.
     tossing and trusting the app.
 
 
-29번 다음 대화를 듣고, 여자의 의견으로 가장 적절한 것을 고르시오.
+2번 다음 대화를 듣고, 여자의 의견으로 가장 적절한 것을 고르시오.
 M: Hi, Sweetie.
 W: Could you keep the orange peels for me?
 M: Why? What are you going to do with them?
@@ -216,57 +183,36 @@ W: I’m planning to use them to make a natural cleaner."""
             current_male_voice = get_voice(male_voice, st.session_state.male_sequence, "male")
             current_voice = None
 
-            current_voice = ko_option
             for sentence in sentences:
                 sentence = sentence.lstrip()
                 lang = which_eng_kor(sentence)
 
-                # ✅ 성별 힌트 추출 (텍스트에서 제거)
-                gender_hint, sentence = extract_speaker(sentence)
-
-                # ✅ 문제 번호 추출 (텍스트에서 제거)
                 number, sentence = extract_question(sentence)
 
-                # ✅ 문제 번호 읽기
                 if number and number != current_number:
                     current_number = number
                     if female_voice in ["random", "order"]:
                         st.session_state.female_sequence += 1
+                        current_female_voice = get_voice(female_voice, st.session_state.female_sequence, "female")
                     if male_voice in ["random", "order"]:
                         st.session_state.male_sequence += 1
+                        current_male_voice = get_voice(male_voice, st.session_state.male_sequence, "male")
 
-                    if not is_first_question:
-                        tts += internum_silence
+                    if not is_first_question:  # 첫 문제 앞에는 무음을 추가하지 않음
+                        tts += internum_silence  # 문제 간 무음 추가
                     is_first_question = False
 
-                if number:
-                    korean_number = num_to_korean(number) + "번 문제입니다."
-                    text_to_convert = f"{korean_number} {sentence}"
-                else:
-                    text_to_convert = sentence
-
-                # ✅ 성별 지표가 있을 때만 목소리 변경
-                # ——— 음성 지표가 있을 때만 목소리 변경 ———
-                if gender_hint == "female":
-                    current_voice = get_voice(female_voice, st.session_state.female_sequence, "female")
-                elif gender_hint == "male":
-                    current_voice = get_voice(male_voice, st.session_state.male_sequence, "male")
-
-                # ——— 번호만 있는 줄이라면 시퀀스만 증가 (목소리는 그대로) ———
-                elif number and number != current_number:
-                    if female_voice in ["random", "order"]:
-                        st.session_state.female_sequence += 1
-                    if male_voice   in ["random", "order"]:
-                        st.session_state.male_sequence   += 1
-
-                # ——— 그 외(지표도 번호도 없으면) current_voice 유지 ———
-                else:
-                    # current_voice 를 변경하지 않음
-                    pass
-
-                # ——— 안전장치: 혹시 None 이면 기본 한국어 음성 사용 ———
-                if current_voice is None:
+                if re.match(r'W:|W :', sentence):
+                    current_voice = current_female_voice
+                elif re.match(r'M:|M :', sentence):
+                    current_voice = current_male_voice
+                elif lang == 'ko':
                     current_voice = ko_option
+                else:
+                    if not current_voice:
+                        current_voice = current_male_voice if current_number and current_number[-1] == '.' else current_female_voice
+
+                text_to_convert = f"{number[:-1]}번.\n'.....'\n {sentence}" if number else sentence
 
                 if text_to_convert.strip():
                     response = client.audio.speech.create(
