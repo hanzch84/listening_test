@@ -1,6 +1,6 @@
 streamlit
-openai
 python-dotenv
+openai
 google-cloud-texttospeech
 gtts
 wave
