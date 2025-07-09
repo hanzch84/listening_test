@@ -216,12 +216,11 @@ W: I’m planning to use them to make a natural cleaner."""
 
                 if text_to_convert.strip():
                     response = client.audio.speech.create(
-                        model="gpt-4o-mini-tts",  # ✅ 최신 속도 지원 모델
+                        model="tts-1",
                         voice=current_voice,
                         input=text_to_convert,
                         speed=speed_rate
-                        )
-
+                    )
 
                     # response.iter_bytes()를 통해 생성된 바이트 데이터를 읽어옵니다.
                     audio_bytes = BytesIO(b"".join(response.iter_bytes()))
