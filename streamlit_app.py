@@ -199,10 +199,10 @@ W: Number Five.
 [Excited and enthusiastic like breakng news]  tossing and trusting the app.
 
 29번 다음 대화를 듣고, 여자의 의견으로 가장 적절한 것을 고르시오.
-[dramatic]M: Hi, Sweetie.
-[dramatic]W: Could you keep the orange peels for me?
-[dramatic]M: Why? What are you going to do with them?
-[dramatic]W: I’m planning to use them to make a natural cleaner."""
+[Theatrical]   M: Hi, Sweetie.
+[Suspenseful]  W: Could you keep the orange peels for me?
+[Curious]      M: Why? What are you going to do with them?
+[Soft whisper] W: I’m planning to use them to make a natural cleaner."""
 
     st.code("""'대본 입력란'의 예시를 지우고 듣기평가 대본을 입력하세요.(Ctrl+Enter)
 앞에 숫자와 '번'또는 '.'을 쓰면 문제번호를 인식합니다.
