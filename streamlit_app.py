@@ -149,7 +149,7 @@ else:
     col_speed, col_subheader = st.columns([5, 7])
     speed_rate = col_speed.slider("음성 속도(배)", 0.55, 1.85, 1.0, 0.05)
     col_subheader.markdown('<p style="font-size:10pt; color: #6b6c70;text-align: right;">제작: 교사 박현수, 버그 및 개선 문의: <a href="mailto:hanzch84@gmail.com">hanzch84@gmail.com</a></p>', unsafe_allow_html=True)
-    col_subheader.markdown('<p style="font-size:14pt; color: #6b6c70;text-align: right;"><a href="https://www.openai.fm/">음성 옵션 미리듣기(openai TTS api overview page)</a></p>', unsafe_allow_html=True)
+    col_subheader.markdown('<p style="font-size:14pt; color: #6b6c70;text-align: right;"><a href="https://www.openai.fm">음성 옵션 미리듣기(openai TTS api overview page)</a></p>', unsafe_allow_html=True)
     col_voice, col_interval = st.columns([10, 3])
     ko_option = col_voice.radio("한국어 음성",
         ['alloy', 'fable', 'nova', 'shimmer', 'echo', 'onyx', 'ash', 'ballad', 'coral', 'sage', 'verse'],
