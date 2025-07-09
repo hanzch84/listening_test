@@ -1,5 +1,5 @@
 streamlit
-openai>=1.93.2
+openai
 python-dotenv
 google-cloud-texttospeech
 gtts
