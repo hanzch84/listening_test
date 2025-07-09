@@ -143,9 +143,10 @@ else:
     1) 성별·문제번호 지표 없는 줄도 직전 목소리 유지
     2) 숫자 → 자연스러운 한글 발음 변환 개선
     3) 추가 음성 옵션(ash, ballad, coral, sage, verse) 지원
-    4) 문장별 톤 지시([Excited], [Calmly] 등) 적용 기능 추가"
+    4) 문장별 톤 지시([Excited], [Calmly] 등) 적용 기능 추가
+    5) 음원 생성 속도 향상"
             style="cursor: help; text-decoration: none; border-bottom: 1px dotted #888;"
-        >(v1.6)</abbr>
+        >v1.6</abbr>
         </h1>
         ''',
         unsafe_allow_html=True
