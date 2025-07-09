@@ -203,7 +203,7 @@ W: Number Five.
 [dramatic]M: Why? What are you going to do with them?
 [dramatic]W: I’m planning to use them to make a natural cleaner."""
 
-    st.code("""'대본 입력란'의 예시를 지우고 듣기평가 대본을 입력하세요.
+    st.code("""'대본 입력란'의 예시를 지우고 듣기평가 대본을 입력하세요.(Ctrl+Enter)
 앞에 숫자와 '번'또는 '.'을 쓰면 문제번호를 인식합니다.
 앞에 음성지표(M:남성,W:여성)를 넣으면 해당 성별 음성으로 바뀝니다.
 각 행의 첫 머리 대괄호[]속에 지시문을 적으면 말투를 바꿀 수 있습니다.
