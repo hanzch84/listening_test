@@ -118,12 +118,6 @@ def extract_speaker(text):
         return "female", w_match.group(1).strip()
     return None, text
 
-def extract_tone(text):
-    # 문장 맨 앞 [지시어] 를 뽑아내고 본문에서 제거
-    m = re.match(r'^\s*\[([^\]]+)\]\s*(.*)', text)
-    if m:
-        return m.group(1).strip(), m.group(2)
-    return None, text
 
 
 load_dotenv()
@@ -137,20 +131,21 @@ else:
 
     st.markdown(
         '''
-        <h1>듣기평가 음원 만들기: En Listen
-        <abbr
-            title="v1.6 업데이트:
-    1) 성별·문제번호 지표 없는 줄도 직전 목소리 유지
-    2) 숫자 → 자연스러운 한글 발음 변환 개선
-    3) 추가 음성 옵션(ash, ballad, coral, sage, verse) 지원
-    4) 문장별 톤 지시([Excited], [Calmly] 등) 적용 기능 추가"
-            style="cursor: help; text-decoration: none; border-bottom: 1px dotted #888;"
-        >(v1.6)</abbr>
+        <h1>
+            듣기평가 음원 만들기: En Listen 
+            <abbr 
+                title="v1.5 업데이트:  
+    1) 성별·문제번호 지표 없는 줄도 직전 목소리 유지  
+    2) 숫자 → 자연스러운 한글 발음 변환 개선  
+    3) 추가 음성 옵션(ash, ballad, coral, sage, verse) 지원" 
+                style="cursor: help; text-decoration: none; border-bottom: 1px dotted #888;"
+            >
+                v1.5
+            </abbr>
         </h1>
         ''',
         unsafe_allow_html=True
     )
-
     col_speed, col_subheader = st.columns([5, 7])
     speed_rate = col_speed.slider("음성 속도(배)", 0.55, 1.85, 1.0, 0.05)
     col_subheader.markdown('<p style="font-size:10pt; color: #6b6c70;text-align: right;">제작: 교사 박현수, 버그 및 개선 문의: <a href="mailto:hanzch84@gmail.com">hanzch84@gmail.com</a></p>', unsafe_allow_html=True)
@@ -207,7 +202,6 @@ W: I’m planning to use them to make a natural cleaner."""
     st.code("""'대본 입력란'의 예시를 지우고 듣기평가 대본을 입력하세요.
 앞에 숫자와 '번'또는 '.'을 쓰면 문제번호를 인식합니다.
 앞에 음성지표(M:남성,W:여성)를 넣으면 해당 성별 음성으로 바뀝니다.
-각 행의 첫 머리 대괄호[]속에 지시문을 적으면 말투를 바꿀 수 있습니다.
 'random'은 문제마다 해당 성별의 음성을 무작위로 선택합니다.
 'order'는 문제마다 해당 성별의 음성을 순서대로 바꿔 줍니다.
 문장, 문제 간격을 조절할 수 있습니다. (각색된 예시 대본 원본 출처:EBS)""", language="haskell")
@@ -239,20 +233,17 @@ W: I’m planning to use them to make a natural cleaner."""
 
             current_female_voice = get_voice(female_voice, st.session_state.female_sequence, "female")
             current_male_voice = get_voice(male_voice, st.session_state.male_sequence, "male")
+            current_voice = None
+
             current_voice = ko_option
             for sentence in sentences:
-                # 앞뒤 공백 제거
                 sentence = sentence.lstrip()
-                # 언어 판별
                 lang = which_eng_kor(sentence)
 
-                # ✅ 톤 지시 추출 ([Excited], [Calmly] 등)
-                tone_hint, sentence = extract_tone(sentence)
-
-                # ✅ 성별 힌트 추출 (M:, W: 제거)
+                # ✅ 성별 힌트 추출 (텍스트에서 제거)
                 gender_hint, sentence = extract_speaker(sentence)
 
-                # ✅ 문제 번호 추출 (번호·번 제거)
+                # ✅ 문제 번호 추출 (텍스트에서 제거)
                 number, sentence = extract_question(sentence)
 
                 # ✅ 문제 번호 읽기
@@ -297,24 +288,21 @@ W: I’m planning to use them to make a natural cleaner."""
                     current_voice = ko_option
 
                 if text_to_convert.strip():
-                    # 스트리밍 API 사용
-                    with client.audio.speech.with_streaming_response.create(
-                        model="gpt-4o-mini-tts",           # 최신 속도 지원 모델
+                    response = client.audio.speech.create(
+                        model="gpt-4o-mini-tts",  # ✅ 최신 속도 지원 모델
                         voice=current_voice,
                         input=text_to_convert,
                         speed=speed_rate,
-                        instructions=tone_hint or "Speak in a calm, clear, and educational tone."
-                    ) as response:
-                        audio_bytes = BytesIO()
-                        # 바이트 청크를 받아서 버퍼에 쓴 뒤
-                        for chunk in response.iter_bytes():
-                            audio_bytes.write(chunk)
-                        # MP3 로 디코딩
-                        audio_chunk = AudioSegment.from_file(BytesIO(audio_bytes.getvalue()), format="mp3")
-                        tts += audio_chunk
+                        instructions="Speak in a calm, clear, and educational tone."
+                        )
 
-                    # 문장 사이 무음
-                    tts += interline_silence
+
+                    # response.iter_bytes()를 통해 생성된 바이트 데이터를 읽어옵니다.
+                    audio_bytes = BytesIO(b"".join(response.iter_bytes()))
+                    audio_chunk = AudioSegment.from_file(audio_bytes, format="mp3")
+                    tts += audio_chunk
+
+                    tts += interline_silence  # 문장 간 무음 추가
 
             tts.export(speech_file_path, format="mp3")
             st.session_state.speech_file_path = str(speech_file_path)
