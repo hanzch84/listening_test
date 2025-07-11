@@ -303,7 +303,7 @@ W: Number Five.
                         voice=current_voice,
                         input=text_to_convert,
                         speed=speed_rate,
-                        instructions=tone_hint or instructions = "Speak clearly and calmly like a teacher, with a steady pace, natural pronunciation, emphasis on key phrases."
+                        instructions=tone_hint or "Speak clearly and calmly like a teacher, with a steady pace, natural pronunciation, emphasis on key phrases."
 
                     ) as response:
                         audio_bytes = BytesIO()
