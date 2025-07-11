@@ -303,7 +303,7 @@ W: Number Five.
                         voice=current_voice,
                         input=text_to_convert,
                         speed=speed_rate,
-                        instructions=tone_hint or "Speak in a calm, clear, and educational tone."
+                        instructions=tone_hint or """Voice Affect: Calm and clear, like a friendly teacher.\n\nTone: Neutral and steady, guiding the listener through the task.\n\nPacing: Moderately slow, with short pauses between sentences.\n\nEmphasis: Highlight key phrases like \"choose the best answer.\"\n\nPronunciation: Precise and natural, easy to follow.\n\nPauses: Slight pause after \"Number one,\" and before options or dialogue."""
                     ) as response:
                         audio_bytes = BytesIO()
                         # 바이트 청크를 받아서 버퍼에 쓴 뒤
