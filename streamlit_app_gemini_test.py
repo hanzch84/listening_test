@@ -104,9 +104,9 @@ api_key = st.text_input(
 st.caption("Gemini API 사용량은 입력한 키의 Google 프로젝트에 청구됩니다. 테스트 대본으로 먼저 확인하세요.")
 
 col1, col2 = st.columns(2)
-voice_default = VOICES.index("Kore")
+voice_default = "Kore"
 voice_male = col1.selectbox("남성/기본 음성", VOICES, index=VOICES.index("Puck"))
-voice_female = col2.selectbox("여성 음성", VOICES, index=voice_default)
+voice_female = col2.selectbox("여성 음성", VOICES, index=VOICES.index(voice_default))
 
 col3, col4 = st.columns(2)
 interline_ms = int(col3.slider("대사 간격 (초)", 0.2, 2.0, 0.7, 0.1) * 1000)
