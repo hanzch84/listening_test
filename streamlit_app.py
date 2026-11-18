@@ -137,7 +137,7 @@ if not api_key:
         api_key = None
 
 if not api_key:
-    st.error("API key not found. Please set the OPENAI_API_KEY environment variable.")
+    st.error("OpenAI API 키를 찾지 못했습니다. OPENAI_API_KEY 환경 변수 또는 Streamlit Secrets에 설정하세요.")
 else:
     client = OpenAI(api_key=api_key)
 
@@ -336,6 +336,12 @@ W: Number Five.
             # balloons, leaving the user with no explanation or download.
             print(f"An error occurred: {type(e).__name__}: {e}")
             st.error(f"음원 생성에 실패했습니다 ({type(e).__name__}): {e}")
+            if type(e).__name__ == "AuthenticationError":
+                st.info("API 키가 만료·폐기되었거나 권한이 없습니다. 사용 가능한 개인/프로젝트 키를 Streamlit Secrets의 OPENAI_API_KEY에 등록하세요.")
+            elif type(e).__name__ == "RateLimitError":
+                st.info("API 사용 한도, 결제 잔액 또는 요청 속도 제한을 확인하세요.")
+            elif type(e).__name__ == "APIConnectionError":
+                st.info("OpenAI API에 연결하지 못했습니다. 배포 환경의 네트워크 상태를 확인하고 다시 시도하세요.")
         else:
             st.balloons()
         finally:
