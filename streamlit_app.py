@@ -129,6 +129,12 @@ def extract_tone(text):
 load_dotenv()
 
 api_key = os.getenv('OPENAI_API_KEY')
+if not api_key:
+    # Streamlit Community Cloud secrets are exposed through st.secrets.
+    try:
+        api_key = st.secrets.get("OPENAI_API_KEY")
+    except Exception:
+        api_key = None
 
 if not api_key:
     st.error("API key not found. Please set the OPENAI_API_KEY environment variable.")
@@ -215,6 +221,8 @@ W: Number Five.
 
     if col_interval.button("🔊 음원 생성하기", disabled=is_input_exist(st.session_state.input_text),):
         print("Generating audio...")
+        # Do not leave a previous file visible if this attempt fails.
+        st.session_state.pop("speech_file_path", None)
 
         overlay_container = st.empty()
         overlay_container.markdown("""
@@ -324,10 +332,14 @@ W: Number Five.
             print("Audio file saved successfully.")
 
         except Exception as e:
-            st.session_state.success_message = f"An error occurred: {e}"
-            print(f"An error occurred: {e}")
-        overlay_container.empty()
-        st.balloons()
+            # The old behavior only printed failures to the server log and showed
+            # balloons, leaving the user with no explanation or download.
+            print(f"An error occurred: {type(e).__name__}: {e}")
+            st.error(f"음원 생성에 실패했습니다 ({type(e).__name__}): {e}")
+        else:
+            st.balloons()
+        finally:
+            overlay_container.empty()
 
     if 'speech_file_path' in st.session_state:
         success_message.success(st.session_state.success_message)
