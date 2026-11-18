@@ -4,3 +4,4 @@ python-dotenv
 google-cloud-texttospeech
 gtts
 pydub
+google-genai>=2.25.0
